@@ -1,0 +1,920 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Veriton Technical Solutions</title>
+<link href="https://fonts.googleapis.com/css2?family=Overpass:ital,wght@0,300;0,400;0,600;0,700;0,800;0,900;1,400;1,600&display=swap" rel="stylesheet"/>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" crossorigin="anonymous"/>
+<style>
+  :root {
+    --blue: #0A3D62;
+    --blue-light: #1a5fa0;
+    --blue-dark: #062a45;
+    --gray: #4A4A4A;
+    --orange: #F39C12;
+    --orange-light: #f5b041;
+    --bg: #F4F4F4;
+    --white: #ffffff;
+    --text-light: #6b7280;
+    --border: #e5e7eb;
+  }
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Overpass', sans-serif;
+    background: var(--bg);
+    color: var(--gray);
+    overflow-x: hidden;
+    letter-spacing: 0.025em;
+  }
+
+  /* ── SCROLLBAR ── */
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--blue-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--orange); border-radius: 3px; }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 5%; height: 100px;
+    background: rgba(6, 42, 69, 0.92);
+    backdrop-filter: blur(14px);
+    border-bottom: 1px solid rgba(243,156,18,0.18);
+    transition: background 0.3s;
+  }
+  .nav-logo img {
+    height: 80px; width: auto; display: block;
+    object-fit: contain;
+  }
+  .nav-links { display: flex; gap: 2.2rem; list-style: none; }
+  .nav-links a {
+    color: rgba(255,255,255,0.82);
+    text-decoration: none;
+    font-family: 'Overpass', sans-serif;
+    font-weight: 600; font-size: 0.82rem; letter-spacing: 0.2em; text-transform: uppercase;
+    position: relative; padding-bottom: 4px; transition: color 0.25s;
+  }
+  .nav-links a::after {
+    content: ''; position: absolute; bottom: 0; left: 0; width: 0; height: 2px;
+    background: var(--orange); transition: width 0.3s;
+  }
+  .nav-links a:hover { color: var(--white); }
+  .nav-links a:hover::after { width: 100%; }
+  .nav-cta {
+    background: var(--orange); color: var(--white) !important;
+    padding: 9px 22px; border-radius: 4px; transition: background 0.25s, transform 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--orange-light); transform: translateY(-1px); }
+  .nav-cta::after { display: none !important; }
+
+  /* Hamburger */
+  .hamburger { display: none; flex-direction: column; gap: 5px; cursor: pointer; padding: 4px; }
+  .hamburger span { display: block; width: 26px; height: 2px; background: var(--white); border-radius: 2px; transition: 0.3s; }
+
+  /* ── HERO ── */
+  #hero {
+    min-height: 100vh;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    align-items: center;
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 60%, #0d5a8e 100%);
+    position: relative;
+    overflow: hidden;
+    padding-top: 74px; /* navbar height */
+  }
+
+  /* subtle dot-grid background */
+  #hero::before {
+    content: '';
+    position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      radial-gradient(rgba(255,255,255,0.07) 1px, transparent 1px);
+    background-size: 36px 36px;
+  }
+
+  /* floating glow orbs */
+  .orb {
+    position: absolute; border-radius: 50%;
+    filter: blur(90px); pointer-events: none; z-index: 0;
+  }
+  .orb-1 { width: 480px; height: 480px; background: rgba(243,156,18,0.13); top: -120px; left: -80px; animation: floatOrb 9s ease-in-out infinite; }
+  .orb-2 { width: 320px; height: 320px; background: rgba(26,95,160,0.28); bottom: -60px; left: 30%; animation: floatOrb 12s ease-in-out infinite reverse; }
+  @keyframes floatOrb { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-28px)} }
+
+  /* ── LEFT: text content ── */
+  .hero-content {
+    position: relative; z-index: 2;
+    padding: 80px 6% 80px 8%;
+    display: flex; flex-direction: column; justify-content: center;
+  }
+  .hero-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(243,156,18,0.15); border: 1px solid rgba(243,156,18,0.4);
+    color: var(--orange); padding: 6px 16px; border-radius: 100px;
+    font-size: 0.75rem; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase;
+    margin-bottom: 1.8rem; width: fit-content;
+    animation: fadeUp 0.8s 0.1s both;
+  }
+  .hero-tag i { font-size: 0.7rem; }
+  .hero-h1 {
+    font-family: 'Overpass', sans-serif;
+    font-weight: 900; font-size: clamp(2.2rem, 3.5vw, 3.4rem);
+    color: var(--white); line-height: 1.12; margin-bottom: 1.4rem;
+    letter-spacing: -0.02em;
+    animation: fadeUp 0.8s 0.25s both;
+  }
+  .hero-h1 span { color: var(--orange); }
+  .hero-sub {
+    color: rgba(255,255,255,0.72); font-size: 1rem; line-height: 1.85;
+    margin-bottom: 2.4rem; letter-spacing: 0.03em;
+    animation: fadeUp 0.8s 0.4s both;
+  }
+  .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; animation: fadeUp 0.8s 0.55s both; }
+  .btn-primary {
+    background: var(--orange); color: var(--white);
+    padding: 14px 32px; border-radius: 5px;
+    font-family: 'Overpass', sans-serif; font-weight: 700; font-size: 0.86rem;
+    letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none;
+    transition: background 0.25s, transform 0.2s, box-shadow 0.25s;
+    box-shadow: 0 4px 22px rgba(243,156,18,0.38);
+  }
+  .btn-primary:hover { background: var(--orange-light); transform: translateY(-2px); box-shadow: 0 8px 28px rgba(243,156,18,0.48); }
+  .btn-outline {
+    background: transparent; color: var(--white);
+    padding: 14px 32px; border-radius: 5px; border: 1.5px solid rgba(255,255,255,0.38);
+    font-family: 'Overpass', sans-serif; font-weight: 700; font-size: 0.86rem;
+    letter-spacing: 0.18em; text-transform: uppercase; text-decoration: none;
+    transition: border-color 0.25s, background 0.25s, transform 0.2s;
+  }
+  .btn-outline:hover { border-color: var(--white); background: rgba(255,255,255,0.09); transform: translateY(-2px); }
+
+  /* stats row */
+  .hero-stats {
+    display: flex; gap: 2.6rem; margin-top: 3.5rem;
+    animation: fadeUp 0.8s 0.7s both;
+    border-top: 1px solid rgba(255,255,255,0.13); padding-top: 2rem;
+    flex-wrap: wrap;
+  }
+  .stat-num {
+    font-family: 'Overpass', sans-serif; font-weight: 900;
+    font-size: 2rem; color: var(--orange); display: block;
+  }
+  .stat-label { color: rgba(255,255,255,0.52); font-size: 0.75rem; letter-spacing: 0.15em; text-transform: uppercase; }
+
+  /* ── RIGHT: image ── */
+  .hero-img-panel {
+    position: relative; z-index: 2;
+    display: flex; align-items: center; justify-content: center;
+    padding: 80px 7% 80px 4%;
+    animation: fadeIn 1s 0.5s both;
+  }
+  /* decorative frame behind image */
+  .hero-img-panel::before {
+    content: '';
+    position: absolute;
+    top: 90px; right: 6%;
+    width: calc(100% - 14%); height: calc(100% - 160px);
+    border: 2px solid rgba(243,156,18,0.25);
+    border-radius: 18px;
+    transform: translate(14px, 14px);
+    pointer-events: none;
+  }
+  /* orange accent corner */
+  .hero-img-panel::after {
+    content: '';
+    position: absolute;
+    bottom: 92px; left: 6%;
+    width: 80px; height: 80px;
+    border-left: 4px solid var(--orange);
+    border-bottom: 4px solid var(--orange);
+    border-radius: 0 0 0 10px;
+    pointer-events: none;
+  }
+  .hero-img-panel img {
+    width: 100%;
+    max-height: 72vh;
+    object-fit: cover;
+    border-radius: 16px;
+    display: block;
+    box-shadow: 0 32px 80px rgba(0,0,0,0.45), 0 0 0 1px rgba(255,255,255,0.06);
+    position: relative; z-index: 1;
+  }
+
+  @keyframes fadeUp { from { opacity:0; transform:translateY(32px) } to { opacity:1; transform:none } }
+  @keyframes fadeIn { from { opacity:0 } to { opacity:1 } }
+
+  /* ── SECTION COMMON ── */
+  section { padding: 100px 5%; }
+  .section-tag {
+    display: inline-block;
+    font-size: 0.7rem; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase;
+    color: var(--orange); background: rgba(243,156,18,0.1);
+    border: 1px solid rgba(243,156,18,0.25);
+    padding: 5px 14px; border-radius: 100px; margin-bottom: 1rem;
+  }
+  .section-title {
+    font-family: 'Overpass', sans-serif; font-weight: 900;
+    font-size: clamp(1.7rem, 3.5vw, 2.6rem);
+    color: var(--blue); line-height: 1.25; margin-bottom: 1rem;
+    letter-spacing: -0.01em;
+  }
+  .section-title span { color: var(--orange); }
+  .section-line {
+    width: 52px; height: 4px; background: var(--orange); border-radius: 2px; margin-bottom: 1.4rem;
+  }
+  .section-desc { color: var(--text-light); font-size: 1rem; line-height: 1.85; max-width: 560px; letter-spacing: 0.02em; }
+
+  /* Reveal animation */
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity 0.7s, transform 0.7s; }
+  .reveal.visible { opacity: 1; transform: none; }
+
+  /* ── ABOUT ── */
+  #about { background: var(--white); }
+  .about-grid {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto;
+  }
+  .about-img-wrap {
+    position: relative;
+  }
+  .about-img-wrap img {
+    width: 100%; border-radius: 12px; display: block;
+    height: 480px; object-fit: cover;
+    box-shadow: 0 24px 60px rgba(10,61,98,0.18);
+  }
+  .about-badge {
+    position: absolute; bottom: -22px; right: -22px;
+    background: var(--blue); color: var(--white);
+    padding: 20px 26px; border-radius: 10px;
+    font-family: 'Overpass', sans-serif;
+    box-shadow: 0 12px 32px rgba(10,61,98,0.3);
+    text-align: center;
+  }
+  .about-badge-num { font-size: 2.2rem; font-weight: 900; color: var(--orange); display: block; }
+  .about-badge-label { font-size: 0.72rem; letter-spacing: 0.16em; text-transform: uppercase; opacity: 0.8; }
+  .about-text .section-desc { max-width: 100%; margin-bottom: 2rem; }
+
+  /* ── VMV ── */
+  #vmv { background: var(--blue-dark); }
+  .vmv-header { text-align: center; margin-bottom: 4rem; }
+  .vmv-header .section-title { color: var(--white); }
+  .vmv-header .section-desc { color: rgba(255,255,255,0.6); margin: 0 auto; }
+  .vmv-header .section-line { margin: 0 auto 1.4rem; }
+  .vmv-cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 28px; max-width: 1200px; margin: 0 auto; }
+  .vmv-card {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 14px; padding: 40px 32px;
+    transition: background 0.3s, transform 0.3s, border-color 0.3s;
+    position: relative; overflow: hidden;
+  }
+  .vmv-card::before {
+    content: ''; position: absolute; top: 0; left: 0; right: 0; height: 3px;
+    background: var(--orange); transform: scaleX(0); transform-origin: left;
+    transition: transform 0.4s;
+  }
+  .vmv-card:hover { background: rgba(255,255,255,0.09); transform: translateY(-6px); border-color: rgba(243,156,18,0.3); }
+  .vmv-card:hover::before { transform: scaleX(1); }
+  .vmv-icon {
+    width: 68px; height: 68px; border-radius: 16px;
+    background: rgba(243,156,18,0.15);
+    border: 1px solid rgba(243,156,18,0.25);
+    display: flex; align-items: center; justify-content: center;
+    margin-bottom: 1.6rem; color: var(--orange); font-size: 1.7rem;
+    transition: background 0.3s, transform 0.3s;
+  }
+  .vmv-card:hover .vmv-icon {
+    background: rgba(243,156,18,0.25); transform: scale(1.08);
+  }
+  .vmv-icon svg { width: 32px; height: 32px; fill: var(--orange); flex-shrink: 0; }
+  .vmv-card h3 {
+    font-family: 'Overpass', sans-serif; font-weight: 700; color: var(--white);
+    font-size: 1.15rem; margin-bottom: 0.8rem;
+  }
+  .vmv-card p { color: rgba(255,255,255,0.6); font-size: 0.92rem; line-height: 1.7; }
+
+  /* Values tags */
+  .vmv-values { max-width: 1200px; margin: 3rem auto 0; }
+  .vmv-values h3 { font-family: 'Overpass', sans-serif; font-weight: 700; color: var(--white); margin-bottom: 1.4rem; font-size: 1rem; letter-spacing: 0.2em; text-transform: uppercase; }
+  .values-list { display: flex; flex-wrap: wrap; gap: 12px; }
+  .val-tag {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: rgba(243,156,18,0.1); border: 1px solid rgba(243,156,18,0.3);
+    color: var(--orange); padding: 8px 18px; border-radius: 100px;
+    font-size: 0.82rem; font-weight: 600; letter-spacing: 0.18em;
+    transition: background 0.25s, transform 0.2s;
+  }
+  .val-tag:hover { background: rgba(243,156,18,0.22); transform: translateY(-2px); }
+
+  /* ── SERVICES ── */
+  #services { background: var(--bg); }
+  .services-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 3.5rem; flex-wrap: wrap; gap: 1rem; }
+  .services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; max-width: 1200px; margin: 0 auto; }
+  .service-card {
+    background: var(--white); border-radius: 14px;
+    border: 1px solid var(--border); overflow: hidden;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+  .service-card:hover { transform: translateY(-8px); box-shadow: 0 20px 50px rgba(10,61,98,0.12); }
+  .service-img { width: 100%; height: 190px; object-fit: cover; display: block; }
+  .service-body { padding: 26px 28px; }
+  .service-num {
+    font-family: 'Overpass', sans-serif; font-weight: 900;
+    font-size: 0.7rem; color: var(--orange); letter-spacing: 0.18em; text-transform: uppercase; margin-bottom: 0.5rem;
+  }
+  .service-body h3 { font-family: 'Overpass', sans-serif; font-weight: 700; color: var(--blue); font-size: 1.05rem; margin-bottom: 0.6rem; }
+  .service-body p { color: var(--text-light); font-size: 0.88rem; line-height: 1.65; }
+  .service-arrow {
+    display: inline-flex; align-items: center; gap: 6px; margin-top: 1rem;
+    color: var(--orange); font-size: 0.8rem; font-weight: 600; letter-spacing: 0.18em; text-transform: uppercase;
+  }
+  .service-card:hover .service-arrow i { transform: translateX(4px); }
+  .service-arrow i { transition: transform 0.25s; }
+
+  /* ── WHY CHOOSE ── */
+  #why { background: var(--white); }
+  .why-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; max-width: 1200px; margin: 0 auto; }
+  .why-img img { width: 100%; border-radius: 12px; height: 1076px; object-fit: cover; box-shadow: 0 24px 60px rgba(10,61,98,0.15); display: block; }
+  .why-list { display: flex; flex-direction: column; gap: 20px; }
+  .why-item {
+    display: flex; gap: 18px; align-items: flex-start;
+    padding: 22px 24px; border-radius: 12px;
+    border: 1px solid var(--border);
+    transition: border-color 0.3s, box-shadow 0.3s, transform 0.3s;
+  }
+  .why-item:hover { border-color: rgba(243,156,18,0.4); box-shadow: 0 8px 28px rgba(10,61,98,0.08); transform: translateX(5px); }
+  .why-icon {
+    flex-shrink: 0; width: 46px; height: 46px; border-radius: 10px;
+    background: rgba(10,61,98,0.07); display: flex; align-items: center; justify-content: center;
+    color: var(--blue); transition: background 0.3s, color 0.3s;
+  }
+  .why-icon svg { fill: var(--blue); transition: fill 0.3s; }
+  .why-item:hover .why-icon { background: var(--orange); }
+  .why-item:hover .why-icon svg { fill: var(--white); }
+  .why-item h4 { font-family: 'Overpass', sans-serif; font-weight: 700; color: var(--blue); font-size: 0.95rem; margin-bottom: 0.3rem; }
+  .why-item p { color: var(--text-light); font-size: 0.86rem; line-height: 1.6; }
+  .why-tagline {
+    margin-top: 1.8rem; padding: 20px 24px; border-radius: 10px;
+    background: var(--blue); color: var(--white);
+    font-family: 'Overpass', sans-serif; font-style: italic; font-weight: 500;
+    font-size: 0.95rem; line-height: 1.6; letter-spacing: 0.04em;
+    border-left: 4px solid var(--orange);
+  }
+
+  /* ── CONTACT ── */
+  #contact {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue) 100%);
+    position: relative; overflow: hidden;
+  }
+  #contact::before {
+    content: ''; position: absolute; inset: 0;
+    background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                      linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+    background-size: 50px 50px;
+  }
+  .contact-wrap { position: relative; z-index: 1; max-width: 1100px; margin: 0 auto; }
+  .contact-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: start; }
+  .contact-info .section-title { color: var(--white); }
+  .contact-info .section-desc { color: rgba(255,255,255,0.65); max-width: 100%; margin-bottom: 2.5rem; }
+  .contact-info .section-line { }
+  .contact-methods { display: flex; flex-direction: column; gap: 16px; }
+  .contact-method {
+    display: flex; align-items: center; gap: 16px;
+    padding: 18px 22px; border-radius: 10px;
+    background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.12);
+    text-decoration: none; color: var(--white);
+    transition: background 0.3s, transform 0.2s;
+  }
+  .contact-method:hover { background: rgba(255,255,255,0.12); transform: translateX(4px); }
+  .contact-method-icon {
+    width: 44px; height: 44px; background: var(--orange); border-radius: 10px;
+    display: flex; align-items: center; justify-content: center; font-size: 1.1rem; flex-shrink: 0;
+  }
+  .contact-method-label { font-size: 0.72rem; opacity: 0.6; letter-spacing: 0.2em; text-transform: uppercase; display: block; margin-bottom: 3px; }
+  .contact-method-val { font-family: 'Overpass', sans-serif; font-weight: 600; font-size: 0.95rem; }
+
+  /* Contact Form */
+  .contact-form { background: var(--white); border-radius: 16px; padding: 40px; box-shadow: 0 24px 60px rgba(0,0,0,0.25); }
+  .contact-form h3 { font-family: 'Overpass', sans-serif; font-weight: 700; color: var(--blue); margin-bottom: 1.8rem; font-size: 1.2rem; }
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px; }
+  .form-group { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-group label { font-size: 0.78rem; font-weight: 600; color: var(--gray); letter-spacing: 0.1em; text-transform: uppercase; }
+  .form-group input, .form-group textarea, .form-group select {
+    border: 1.5px solid var(--border); border-radius: 8px;
+    padding: 12px 15px; font-family: 'Overpass', sans-serif; font-size: 0.9rem;
+    color: var(--gray); background: var(--bg); outline: none;
+    transition: border-color 0.25s, box-shadow 0.25s;
+  }
+  .form-group input:focus, .form-group textarea:focus, .form-group select:focus {
+    border-color: var(--orange); box-shadow: 0 0 0 3px rgba(243,156,18,0.15);
+  }
+  .form-group textarea { resize: vertical; min-height: 110px; }
+  .form-submit {
+    width: 100%; padding: 14px; border: none; border-radius: 8px;
+    background: var(--blue); color: var(--white);
+    font-family: 'Overpass', sans-serif; font-weight: 700; font-size: 0.88rem;
+    letter-spacing: 0.2em; text-transform: uppercase; cursor: pointer;
+    transition: background 0.25s, transform 0.2s;
+  }
+  .form-submit:hover { background: var(--blue-light); transform: translateY(-1px); }
+
+  /* ── FOOTER ── */
+  footer {
+    background: #041d2f; padding: 30px 5%;
+    display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+    border-top: 1px solid rgba(255,255,255,0.08);
+  }
+  .footer-copy { color: rgba(255,255,255,0.4); font-size: 0.8rem; }
+  .footer-links { display: flex; gap: 1.6rem; }
+  .footer-links a { color: rgba(255,255,255,0.45); font-size: 0.8rem; text-decoration: none; transition: color 0.2s; }
+  .footer-links a:hover { color: var(--orange); }
+
+  /* ── MOBILE ── */
+  @media (max-width: 900px) {
+    #hero { grid-template-columns: 1fr; padding-top: 74px; }
+    .hero-content { padding: 50px 5% 40px; }
+    .hero-img-panel { padding: 0 5% 50px; }
+    .hero-img-panel::before, .hero-img-panel::after { display: none; }
+    .hero-img-panel img { max-height: 280px; border-radius: 12px; }
+    .about-grid, .why-grid, .contact-grid { grid-template-columns: 1fr; gap: 3rem; }
+    .about-badge { bottom: 10px; right: 10px; }
+    .hero-stats { gap: 2rem; flex-wrap: wrap; }
+    .form-row { grid-template-columns: 1fr; }
+    nav { padding: 0 4%; }
+    .nav-links { display: none; flex-direction: column; gap: 0;
+      position: absolute; top: 74px; left: 0; right: 0;
+      background: var(--blue-dark); padding: 1rem 0; }
+    .nav-links.open { display: flex; }
+    .nav-links li { padding: 0; }
+    .nav-links a { display: block; padding: 12px 5%; border-bottom: 1px solid rgba(255,255,255,0.07); }
+    .hamburger { display: flex; }
+    .services-header { flex-direction: column; align-items: flex-start; }
+    .why-img { order: -1; }
+  }
+</style>
+</head>
+<body>
+
+<!-- ── NAVBAR ── -->
+<nav id="navbar">
+  <div class="nav-logo">
+    <img src="Veriton_Logo.png" alt="Veriton Technical Solutions Logo"/>
+  </div>
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#about">About</a></li>
+    <li><a href="#vmv">Our Vision</a></li>
+    <li><a href="#services">Services</a></li>
+    <li><a href="#why">Why Us</a></li>
+    <li><a href="#contact" class="nav-cta">Contact Us</a></li>
+  </ul>
+  <div class="hamburger" id="hamburger" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </div>
+</nav>
+
+<!-- ── HERO ── -->
+<section id="hero">
+  <!-- floating glow orbs (CSS positioned) -->
+  <div class="orb orb-1"></div>
+  <div class="orb orb-2"></div>
+
+  <!-- LEFT: text content -->
+  <div class="hero-content">
+    <div class="hero-tag">
+      <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+      Trusted Quality &amp; Precision
+    </div>
+    <h1 class="hero-h1">
+      Delivering <span>Intelligent Solutions</span><br/>with Precision &amp; Trust
+    </h1>
+    <p class="hero-sub">
+      Veriton Technical Solutions is your trusted partner for quality assurance, validation, and process optimization, delivering reliable and scalable solutions across diverse industries.
+    </p>
+    <div class="hero-btns">
+      <a href="#services" class="btn-primary">Explore Our Services</a>
+      <a href="#contact" class="btn-outline">Get in Touch</a>
+    </div>
+    <div class="hero-stats">
+      <div class="stat-item">
+        <span class="stat-num" data-count="7">0</span>
+        <span class="stat-label">Service Verticals</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="100">0</span>
+        <span class="stat-label">% Client Focus</span>
+      </div>
+      <div class="stat-item">
+        <span class="stat-num" data-count="50">0</span>
+        <span class="stat-label">+ Skilled Professionals</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT: hero image -->
+  <div class="hero-img-panel">
+    <img src="Hero_img.png" alt="Veriton Technical Solutions — industrial operations"/>
+  </div>
+</section>
+
+<!-- ── ABOUT ── -->
+<section id="about">
+  <div class="about-grid">
+    <div class="about-img-wrap reveal">
+      <img src="A Team Built on Expertise & Integrity.png" alt="Veriton professional team at work"/>
+      <div class="about-badge">
+        <span class="about-badge-num">10+</span>
+        <span class="about-badge-label">Years of<br/>Excellence</span>
+      </div>
+    </div>
+    <div class="about-text reveal" style="transition-delay:0.15s">
+      <span class="section-tag">Who We Are</span>
+      <h2 class="section-title">A Team Built on <span>Expertise</span> &amp; Integrity</h2>
+      <div class="section-line"></div>
+      <p class="section-desc">
+        At Veriton Technical Solutions, we are a team of passionate and experienced professionals dedicated to delivering intelligent, reliable, and result driven solutions across diverse industries.
+      </p>
+      <p class="section-desc" style="margin-top:1rem;">
+        We specialize in quality assurance, validation, verification, and process optimization services that help businesses improve efficiency, maintain standards, and achieve sustainable growth. With a strong focus on innovation, precision, and client satisfaction, our flexible teams are equipped to support projects across multiple locations with consistent excellence.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ── VISION MISSION VALUES ── -->
+<section id="vmv">
+  <div class="vmv-header reveal">
+    <span class="section-tag">Our Foundation</span>
+    <h2 class="section-title">Vision, Mission <span>&amp; Values</span></h2>
+    <div class="section-line"></div>
+    <p class="section-desc">The principles that guide everything we do — from client engagement to operational delivery.</p>
+  </div>
+  <div class="vmv-cards">
+
+    <!-- Vision card — telescope/eye icon -->
+    <div class="vmv-card reveal" style="transition-delay:0.1s">
+      <div class="vmv-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 4.5C7 4.5 2.73 7.61 1 12c1.73 4.39 6 7.5 11 7.5s9.27-3.11 11-7.5c-1.73-4.39-6-7.5-11-7.5zm0 12.5a5 5 0 1 1 0-10 5 5 0 0 1 0 10zm0-8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"/>
+        </svg>
+      </div>
+      <h3>Our Vision</h3>
+      <p>To become a leading provider of intelligent solutions that inspire trust, efficiency, and sustainable growth across industries.</p>
+    </div>
+
+    <!-- Mission card — target/crosshair icon -->
+    <div class="vmv-card reveal" style="transition-delay:0.2s">
+      <div class="vmv-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 2a10 10 0 1 0 0 20A10 10 0 0 0 12 2zm0 18a8 8 0 1 1 0-16 8 8 0 0 1 0 16zm0-13a5 5 0 1 0 0 10A5 5 0 0 0 12 7zm0 8a3 3 0 1 1 0-6 3 3 0 0 1 0 6zm0-4a1 1 0 1 0 0 2 1 1 0 0 0 0-2z"/>
+        </svg>
+      </div>
+      <h3>Our Mission</h3>
+      <p>To deliver value-driven solutions that enhance business performance through innovation, expertise, and operational excellence.</p>
+    </div>
+
+    <!-- Values card — shield/integrity icon -->
+    <div class="vmv-card reveal" style="transition-delay:0.3s">
+      <div class="vmv-icon">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/>
+        </svg>
+      </div>
+      <h3>Our Values</h3>
+      <p>We operate with excellence, innovation, and transparency — fostering collaboration and agility to achieve measurable customer success.</p>
+    </div>
+
+  </div>
+  <div class="vmv-values reveal" style="transition-delay:0.4s">
+    <h3>Core Values</h3>
+    <div class="values-list">
+      <span class="val-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2l2.4 7.4H22l-6.2 4.5 2.4 7.4L12 17l-6.2 4.3 2.4-7.4L2 9.4h7.6z"/></svg>
+        Excellence
+      </span>
+      <span class="val-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M9 21c0 .55.45 1 1 1h4c.55 0 1-.45 1-1v-1H9v1zm3-19C8.14 2 5 5.14 5 9c0 2.38 1.19 4.47 3 5.74V17c0 .55.45 1 1 1h6c.55 0 1-.45 1-1v-2.26c1.81-1.27 3-3.36 3-5.74 0-3.86-3.14-7-7-7z"/></svg>
+        Innovation
+      </span>
+      <span class="val-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 14l-4-4 1.41-1.41L10 12.17l6.59-6.59L18 7l-8 8z"/></svg>
+        Trust &amp; Transparency
+      </span>
+      <span class="val-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+        Collaboration
+      </span>
+      <span class="val-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M13.49 5.48c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-3.6 13.9l1-4.4 2.1 2v6h2v-7.5l-2.1-2 .6-3c1.3 1.5 3.3 2.5 5.5 2.5v-2c-1.9 0-3.5-1-4.3-2.4l-1-1.6c-.4-.6-1-1-1.7-1-.3 0-.5.1-.8.1l-5.2 2.2v4.7h2v-3.4l1.8-.7-1.6 8.1-4.9-1-.4 2 7 1.4z"/></svg>
+        Agility
+      </span>
+      <span class="val-tag">
+        <svg viewBox="0 0 24 24" width="14" height="14" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm3.5-9c.83 0 1.5-.67 1.5-1.5S16.33 8 15.5 8 14 8.67 14 9.5s.67 1.5 1.5 1.5zm-7 0c.83 0 1.5-.67 1.5-1.5S9.33 8 8.5 8 7 8.67 7 9.5 7.67 11 8.5 11zm3.5 6.5c2.33 0 4.31-1.46 5.11-3.5H6.89c.8 2.04 2.78 3.5 5.11 3.5z"/></svg>
+        Customer Success
+      </span>
+    </div>
+  </div>
+</section>
+
+<!-- ── SERVICES ── -->
+<section id="services">
+  <div class="services-header">
+    <div class="reveal">
+      <span class="section-tag">What We Do</span>
+      <h2 class="section-title">Our <span>Services</span></h2>
+      <div class="section-line"></div>
+      <p class="section-desc">End-to-end professional solutions that enable organizations to improve quality, optimize operations, and drive business excellence.</p>
+    </div>
+  </div>
+  <div class="services-grid">
+
+    <div class="service-card reveal" style="transition-delay:0.05s">
+      <img src="Service1.png" alt="Inspection and Quality Assurance" class="service-img"/>
+      <div class="service-body">
+        <div class="service-num">01 — Service</div>
+        <h3>Inspection &amp; Quality Assurance</h3>
+        <p>Rigorous inspection frameworks and QA processes ensuring your products and operations meet the highest standards consistently.</p>
+        <div class="service-arrow">Learn More <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle;margin-left:4px"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="service-card reveal" style="transition-delay:0.1s">
+      <img src="Service2.png" alt="Procurement and Supply Support" class="service-img"/>
+      <div class="service-body">
+        <div class="service-num">02 — Service</div>
+        <h3>Procurement &amp; Supply Support</h3>
+        <p>Strategic procurement management and supply chain support that reduces cost, improves lead times, and ensures continuity.</p>
+        <div class="service-arrow">Learn More <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle;margin-left:4px"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="service-card reveal" style="transition-delay:0.15s">
+      <img src="service3.png" alt="Operations and Process Management" class="service-img"/>
+      <div class="service-body">
+        <div class="service-num">03 — Service</div>
+        <h3>Operations &amp; Process Management</h3>
+        <p>Streamlined operational workflows and process optimization that drive productivity, reduce waste, and boost performance.</p>
+        <div class="service-arrow">Learn More <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle;margin-left:4px"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="service-card reveal" style="transition-delay:0.2s">
+      <img src="service4.png" alt="Warehouse and Inventory Management" class="service-img"/>
+      <div class="service-body">
+        <div class="service-num">04 — Service</div>
+        <h3>Warehouse &amp; Inventory Management</h3>
+        <p>Intelligent warehouse operations and inventory tracking systems that maximize accuracy, space utilization, and throughput.</p>
+        <div class="service-arrow">Learn More <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle;margin-left:4px"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="service-card reveal" style="transition-delay:0.25s">
+      <img src="Service5.png" alt="Logistics and Dispatch Coordination" class="service-img"/>
+      <div class="service-body">
+        <div class="service-num">05 — Service</div>
+        <h3>Logistics &amp; Dispatch Coordination</h3>
+        <p>Seamless end-to-end logistics coordination and dispatch management ensuring on-time delivery at every stage.</p>
+        <div class="service-arrow">Learn More <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle;margin-left:4px"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="service-card reveal" style="transition-delay:0.3s">
+      <img src="Service6.png" alt="Training and Capability Development" class="service-img"/>
+      <div class="service-body">
+        <div class="service-num">06 — Service</div>
+        <h3>Training &amp; Capability Development</h3>
+        <p>Structured training programs that upskill your workforce, build institutional knowledge, and drive operational excellence.</p>
+        <div class="service-arrow">Learn More <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle;margin-left:4px"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+      </div>
+    </div>
+
+    <div class="service-card reveal" style="transition-delay:0.35s; grid-column: 1 / -1; max-width: 400px;">
+      <img src="Service7.png" alt="Audit and Performance Assessment" class="service-img"/>
+      <div class="service-body">
+        <div class="service-num">07 — Service</div>
+        <h3>Audit &amp; Performance Assessment</h3>
+        <p>Comprehensive audits and performance benchmarking that identify gaps, mitigate risk, and ensure regulatory alignment.</p>
+        <div class="service-arrow">Learn More <svg viewBox="0 0 24 24" width="13" height="13" fill="currentColor" style="vertical-align:middle;margin-left:4px"><path d="M12 4l-1.41 1.41L16.17 11H4v2h12.17l-5.58 5.59L12 20l8-8z"/></svg></div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- ── WHY CHOOSE ── -->
+<section id="why">
+  <div class="why-grid">
+    <div class="why-img reveal">
+      <img src="Built on Trust, Driven by Results.png" alt="Why choose Veriton"/>
+    </div>
+    <div class="reveal" style="transition-delay:0.15s">
+      <span class="section-tag">Why Veriton</span>
+      <h2 class="section-title">Built on <span>Trust</span>, Driven by Results</h2>
+      <div class="section-line"></div>
+      <p class="section-desc" style="margin-bottom:2rem">
+        At Veriton, successful partnerships are built on trust, expertise, and consistent performance. Our commitment to excellence enables us to deliver scalable and result-oriented solutions.
+      </p>
+      <div class="why-list">
+        <div class="why-item">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M4 10.5c-.83 0-1.5.67-1.5 1.5s.67 1.5 1.5 1.5 1.5-.67 1.5-1.5-.67-1.5-1.5-1.5zm0-6c-.83 0-1.5.67-1.5 1.5S3.17 7.5 4 7.5 5.5 6.83 5.5 6 4.83 4.5 4 4.5zm0 12c-.83 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.67-1.5-1.5-1.5zM7 19h14v-2H7v2zm0-6h14v-2H7v2zm0-8v2h14V5H7z"/></svg>
+          </div>
+          <div>
+            <h4>Deep Industry Knowledge</h4>
+            <p>Years of hands-on experience across sectors gives us unique insight into complex operational challenges.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+          </div>
+          <div>
+            <h4>Client-Centric Approach</h4>
+            <p>Every solution is tailored to your specific goals, culture, and operational environment.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M19.14 12.94c.04-.3.06-.61.06-.94 0-.32-.02-.64-.07-.94l2.03-1.58c.18-.14.23-.41.12-.61l-1.92-3.32c-.12-.22-.37-.29-.59-.22l-2.39.96c-.5-.38-1.03-.7-1.62-.94l-.36-2.54c-.04-.24-.24-.41-.48-.41h-3.84c-.24 0-.43.17-.47.41l-.36 2.54c-.59.24-1.13.57-1.62.94l-2.39-.96c-.22-.08-.47 0-.59.22L2.74 8.87c-.12.21-.08.47.12.61l2.03 1.58c-.05.3-.09.63-.09.94s.02.64.07.94l-2.03 1.58c-.18.14-.23.41-.12.61l1.92 3.32c.12.22.37.29.59.22l2.39-.96c.5.38 1.03.7 1.62.94l.36 2.54c.05.24.24.41.48.41h3.84c.24 0 .44-.17.47-.41l.36-2.54c.59-.24 1.13-.56 1.62-.94l2.39.96c.22.08.47 0 .59-.22l1.92-3.32c.12-.22.07-.47-.12-.61l-2.01-1.58zM12 15.6c-1.98 0-3.6-1.62-3.6-3.6s1.62-3.6 3.6-3.6 3.6 1.62 3.6 3.6-1.62 3.6-3.6 3.6z"/></svg>
+          </div>
+          <div>
+            <h4>Process Excellence</h4>
+            <p>Structured methodologies and best practices that consistently produce measurable, reliable outcomes.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg>
+          </div>
+          <div>
+            <h4>Skilled &amp; Dedicated Teams</h4>
+            <p>Experienced professionals committed to delivering excellence on every project, at every location.</p>
+          </div>
+        </div>
+        <div class="why-item">
+          <div class="why-icon">
+            <svg viewBox="0 0 24 24" width="22" height="22" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg>
+          </div>
+          <div>
+            <h4>Agile Execution &amp; Timely Delivery</h4>
+            <p>Flexible, responsive execution models that adapt quickly and deliver on schedule — every time.</p>
+          </div>
+        </div>
+      </div>
+      <div class="why-tagline">
+        "Focused on quality, driven by innovation, and committed to delivering measurable business value."
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CONTACT ── -->
+<section id="contact">
+  <div class="contact-wrap">
+    <div class="contact-grid">
+      <div class="reveal">
+        <span class="section-tag">Get In Touch</span>
+        <h2 class="section-title"><span style="color: white;">Let's</span> <span>Work Together</span></h2>
+        <div class="section-line"></div>
+        <p class="section-desc">
+          Ready to elevate your operations? Reach out to us today and let's explore how Veriton can deliver measurable value to your business.
+        </p>
+        <div class="contact-methods">
+          <a href="tel:+919545459346" class="contact-method">
+            <div class="contact-method-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z"/></svg>
+            </div>
+            <div>
+              <span class="contact-method-label">Phone</span>
+              <span class="contact-method-val">+91 9545459346</span>
+            </div>
+          </a>
+          <a href="mailto:admin@veritoncore.com" class="contact-method">
+            <div class="contact-method-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z"/></svg>
+            </div>
+            <div>
+              <span class="contact-method-label">Email</span>
+              <span class="contact-method-val">admin@veritoncore.com</span>
+            </div>
+          </a>
+          <div class="contact-method" style="cursor:default">
+            <div class="contact-method-icon">
+              <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z"/></svg>
+            </div>
+            <div>
+              <span class="contact-method-label">Coverage</span>
+              <span class="contact-method-val">Pan-India &amp; Multi-location Support</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="contact-form reveal" style="transition-delay:0.15s">
+        <h3>Send Us a Message</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="fname">First Name</label>
+            <input type="text" id="fname" placeholder="John"/>
+          </div>
+          <div class="form-group">
+            <label for="lname">Last Name</label>
+            <input type="text" id="lname" placeholder="Doe"/>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="email">Email Address</label>
+          <input type="email" id="email" placeholder="john@company.com"/>
+        </div>
+        <div class="form-group">
+          <label for="service">Service of Interest</label>
+          <select id="service">
+            <option value="">Select a service...</option>
+            <option>Inspection &amp; Quality Assurance</option>
+            <option>Procurement &amp; Supply Support</option>
+            <option>Operations &amp; Process Management</option>
+            <option>Warehouse &amp; Inventory Management</option>
+            <option>Logistics &amp; Dispatch Coordination</option>
+            <option>Training &amp; Capability Development</option>
+            <option>Audit &amp; Performance Assessment</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="msg">Your Message</label>
+          <textarea id="msg" placeholder="Tell us about your project or requirements..."></textarea>
+        </div>
+        <button class="form-submit" onclick="handleSubmit()">
+          <svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:middle;margin-right:8px"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Send Message
+        </button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FOOTER ── -->
+<footer>
+  <span class="footer-copy">&copy; 2026 Veriton Technical Solutions. All rights reserved.</span>
+  <div class="footer-links">
+    <a href="#about">About</a>
+    <a href="#services">Services</a>
+    <a href="#why">Why Us</a>
+    <a href="#contact">Contact</a>
+  </div>
+</footer>
+
+<script>
+  /* ── Hamburger ── */
+  function toggleMenu() {
+    document.getElementById('navLinks').classList.toggle('open');
+  }
+
+  /* ── Scroll reveal ── */
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  /* ── Counter animation ── */
+  function animateCounters() {
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const target = parseInt(el.dataset.count);
+      let current = 0;
+      const step = Math.ceil(target / 50);
+      const timer = setInterval(() => {
+        current = Math.min(current + step, target);
+        el.textContent = current;
+        if (current >= target) clearInterval(timer);
+      }, 28);
+    });
+  }
+  /* Trigger counters when hero is visible */
+  const heroObs = new IntersectionObserver((entries) => {
+    if (entries[0].isIntersecting) { animateCounters(); heroObs.disconnect(); }
+  }, { threshold: 0.4 });
+  heroObs.observe(document.getElementById('hero'));
+
+  /* ── Navbar shrink on scroll ── */
+  window.addEventListener('scroll', () => {
+    const nav = document.getElementById('navbar');
+    if (window.scrollY > 60) {
+      nav.style.height = '60px';
+      nav.style.background = 'rgba(6,42,69,0.98)';
+    } else {
+      nav.style.height = '74px';
+      nav.style.background = 'rgba(6,42,69,0.92)';
+    }
+  });
+
+  /* ── Form submit ── */
+  function handleSubmit() {
+    const btn = document.querySelector('.form-submit');
+    btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:middle;margin-right:8px"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg> Message Sent!';
+    btn.style.background = '#27ae60';
+    setTimeout(() => {
+      btn.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="currentColor" style="vertical-align:middle;margin-right:8px"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg> Send Message';
+      btn.style.background = '';
+    }, 3000);
+  }
+</script>
+</body>
+</html>
